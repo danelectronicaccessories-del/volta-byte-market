@@ -10,13 +10,13 @@ const Header = () => {
   const categories = [
     { name: "Phones", href: "/phones" },
     { name: "Phone Spares", href: "/phone-spares" },
-    { name: "Laptops", href: "#" },
-    { name: "Accessories", href: "#" },
-    { name: "Smart Devices", href: "#" },
-    { name: "Audio", href: "#" },
-    { name: "Gaming", href: "#" },
-    { name: "Cameras", href: "#" },
-    { name: "Wearables", href: "#" }
+    { name: "Laptops", href: "/laptops" },
+    { name: "Accessories", href: "/accessories" },
+    { name: "Smart Devices", href: "/smart-devices" },
+    { name: "Audio", href: "/audio" },
+    { name: "Gaming", href: "/gaming" },
+    { name: "Cameras", href: "/cameras" },
+    { name: "Wearables", href: "/wearables" }
   ];
 
   return (
@@ -45,7 +45,7 @@ const Header = () => {
             </Button>
             <Link to="/">
               <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                TechStore
+                Dan Electronics Accessories
               </h1>
             </Link>
           </div>

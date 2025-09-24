@@ -6,6 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Phones from "./pages/Phones";
 import PhoneSpares from "./pages/PhoneSpares";
+import Laptops from "./pages/Laptops";
+import Accessories from "./pages/Accessories";
+import SmartDevices from "./pages/SmartDevices";
+import Audio from "./pages/Audio";
+import Gaming from "./pages/Gaming";
+import Cameras from "./pages/Cameras";
+import Wearables from "./pages/Wearables";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
@@ -21,6 +28,13 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/phones" element={<Phones />} />
           <Route path="/phone-spares" element={<PhoneSpares />} />
+          <Route path="/laptops" element={<Laptops />} />
+          <Route path="/accessories" element={<Accessories />} />
+          <Route path="/smart-devices" element={<SmartDevices />} />
+          <Route path="/audio" element={<Audio />} />
+          <Route path="/gaming" element={<Gaming />} />
+          <Route path="/cameras" element={<Cameras />} />
+          <Route path="/wearables" element={<Wearables />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
