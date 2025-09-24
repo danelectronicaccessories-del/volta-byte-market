@@ -1,8 +1,24 @@
-import { Search, ShoppingCart, User, Menu, Heart } from "lucide-react";
+import { useState } from "react";
+import { Search, ShoppingCart, User, Menu, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const categories = [
+    { name: "Phones", href: "/phones" },
+    { name: "Phone Spares", href: "/phone-spares" },
+    { name: "Laptops", href: "#" },
+    { name: "Accessories", href: "#" },
+    { name: "Smart Devices", href: "#" },
+    { name: "Audio", href: "#" },
+    { name: "Gaming", href: "#" },
+    { name: "Cameras", href: "#" },
+    { name: "Wearables", href: "#" }
+  ];
+
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50">
       {/* Top banner */}
@@ -19,12 +35,19 @@ const Header = () => {
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              TechStore
-            </h1>
+            <Link to="/">
+              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                TechStore
+              </h1>
+            </Link>
           </div>
           
           {/* Search bar */}
@@ -54,25 +77,42 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Category navigation */}
-      <nav className="border-t border-border bg-secondary/30">
+      {/* Desktop Category navigation */}
+      <nav className="border-t border-border bg-secondary/30 hidden md:block">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-8 py-3 overflow-x-auto">
-            {[
-              "Phones", "Laptops", "Accessories", "Smart Devices", 
-              "Audio", "Gaming", "Cameras", "Wearables"
-            ].map((category) => (
-              <a
-                key={category}
-                href="#"
+            {categories.map((category) => (
+              <Link
+                key={category.name}
+                to={category.href}
                 className="text-sm font-medium whitespace-nowrap hover:text-primary transition-smooth"
               >
-                {category}
-              </a>
+                {category.name}
+              </Link>
             ))}
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-background border-t border-border">
+          <nav className="container mx-auto px-4 py-4">
+            <div className="flex flex-col gap-4">
+              {categories.map((category) => (
+                <Link
+                  key={category.name}
+                  to={category.href}
+                  className="text-sm font-medium py-2 hover:text-primary transition-smooth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,6 +1,7 @@
 import { Star, Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -16,6 +17,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
+  id,
   name,
   image,
   price,
@@ -29,12 +31,13 @@ const ProductCard = ({
   return (
     <div className="group bg-card rounded-lg border border-border shadow-card hover:shadow-product transition-all duration-300 hover:-translate-y-1 overflow-hidden">
       {/* Image container */}
-      <div className="relative aspect-square bg-muted/20 overflow-hidden">
-        <img 
-          src={image} 
-          alt={name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+      <Link to={`/product/${id}`} className="block">
+        <div className="relative aspect-square bg-muted/20 overflow-hidden">
+          <img 
+            src={image} 
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
@@ -64,13 +67,16 @@ const ProductCard = ({
             Add to Cart
           </Button>
         </div>
-      </div>
+        </div>
+      </Link>
       
       {/* Product info */}
       <div className="p-4">
-        <h3 className="font-medium text-card-foreground line-clamp-2 mb-2 group-hover:text-primary transition-smooth">
-          {name}
-        </h3>
+        <Link to={`/product/${id}`}>
+          <h3 className="font-medium text-card-foreground line-clamp-2 mb-2 group-hover:text-primary transition-smooth">
+            {name}
+          </h3>
+        </Link>
         
         {/* Rating */}
         <div className="flex items-center gap-1 mb-2">
