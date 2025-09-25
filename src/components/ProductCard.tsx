@@ -2,6 +2,8 @@ import { Star, Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ProductCardProps {
   id: string;
@@ -28,6 +30,14 @@ const ProductCard = ({
   isNew,
   isFavorite = false
 }: ProductCardProps) => {
+  const { addToCart, loading } = useCart();
+  const { user } = useAuth();
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await addToCart(id);
+  };
   return (
     <div className="group bg-card rounded-lg border border-border shadow-card hover:shadow-product transition-all duration-300 hover:-translate-y-1 overflow-hidden">
       {/* Image container */}
@@ -62,9 +72,14 @@ const ProductCard = ({
         
         {/* Quick add to cart */}
         <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="sm">
+          <Button 
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" 
+            size="sm"
+            onClick={handleAddToCart}
+            disabled={loading || !user}
+          >
             <ShoppingCart className="h-4 w-4 mr-2" />
-            Add to Cart
+            {!user ? 'Sign in to Add' : 'Add to Cart'}
           </Button>
         </div>
         </div>

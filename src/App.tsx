@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { CartProvider } from "@/hooks/useCart";
 import Index from "./pages/Index";
 import Phones from "./pages/Phones";
 import PhoneSpares from "./pages/PhoneSpares";
@@ -14,6 +16,7 @@ import Gaming from "./pages/Gaming";
 import Cameras from "./pages/Cameras";
 import Wearables from "./pages/Wearables";
 import ProductDetail from "./pages/ProductDetail";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,25 +24,30 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/phones" element={<Phones />} />
-          <Route path="/phone-spares" element={<PhoneSpares />} />
-          <Route path="/laptops" element={<Laptops />} />
-          <Route path="/accessories" element={<Accessories />} />
-          <Route path="/smart-devices" element={<SmartDevices />} />
-          <Route path="/audio" element={<Audio />} />
-          <Route path="/gaming" element={<Gaming />} />
-          <Route path="/cameras" element={<Cameras />} />
-          <Route path="/wearables" element={<Wearables />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/phones" element={<Phones />} />
+              <Route path="/phone-spares" element={<PhoneSpares />} />
+              <Route path="/laptops" element={<Laptops />} />
+              <Route path="/accessories" element={<Accessories />} />
+              <Route path="/smart-devices" element={<SmartDevices />} />
+              <Route path="/audio" element={<Audio />} />
+              <Route path="/gaming" element={<Gaming />} />
+              <Route path="/cameras" element={<Cameras />} />
+              <Route path="/wearables" element={<Wearables />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/auth" element={<Auth />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
