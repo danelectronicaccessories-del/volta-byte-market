@@ -45,7 +45,7 @@ const Header = () => {
             </Button>
             <Link to="/">
               <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Dan Electronics Accessories
+                Volta
               </h1>
             </Link>
           </div>
