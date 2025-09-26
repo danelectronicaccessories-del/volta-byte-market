@@ -1,8 +1,12 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
+import SortFilter, { SortOption } from "@/components/SortFilter";
 
 const Gaming = () => {
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
+
   const gamingProducts = [
     {
       id: "gaming1",
@@ -66,6 +70,24 @@ const Gaming = () => {
     }
   ];
 
+  const sortProducts = (products: typeof gamingProducts, sortOption: SortOption) => {
+    const sorted = [...products];
+    switch (sortOption) {
+      case 'price-low':
+        return sorted.sort((a, b) => a.price - b.price);
+      case 'price-high':
+        return sorted.sort((a, b) => b.price - a.price);
+      case 'rating':
+        return sorted.sort((a, b) => b.rating - a.rating);
+      case 'newest':
+        return sorted.sort((a, b) => (b.discount || 0) - (a.discount || 0));
+      default:
+        return sorted;
+    }
+  };
+
+  const sortedGamingProducts = sortProducts(gamingProducts, sortBy);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -74,9 +96,17 @@ const Gaming = () => {
           <h1 className="text-3xl font-bold mb-2">Gaming</h1>
           <p className="text-muted-foreground">Level up your gaming experience</p>
         </div>
+
+        <div className="mb-8">
+          <SortFilter 
+            currentSort={sortBy}
+            onSortChange={setSortBy}
+            productCount={gamingProducts.length}
+          />
+        </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {gamingProducts.map((product) => (
+          {sortedGamingProducts.map((product) => (
             <ProductCard 
               key={product.id} 
               id={product.id}

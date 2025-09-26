@@ -16,6 +16,8 @@ import Gaming from "./pages/Gaming";
 import Cameras from "./pages/Cameras";
 import Wearables from "./pages/Wearables";
 import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +43,8 @@ const App = () => (
               <Route path="/cameras" element={<Cameras />} />
               <Route path="/wearables" element={<Wearables />} />
               <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
               <Route path="/auth" element={<Auth />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

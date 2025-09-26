@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SortFilter, { SortOption } from "@/components/SortFilter";
 
 // Mock phone spares products data
 const phoneSpareProducts = [
@@ -88,6 +90,26 @@ const phoneSpareProducts = [
 ];
 
 const PhoneSpares = () => {
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
+
+  const sortProducts = (products: typeof phoneSpareProducts, sortOption: SortOption) => {
+    const sorted = [...products];
+    switch (sortOption) {
+      case 'price-low':
+        return sorted.sort((a, b) => a.price - b.price);
+      case 'price-high':
+        return sorted.sort((a, b) => b.price - a.price);
+      case 'rating':
+        return sorted.sort((a, b) => b.rating - a.rating);
+      case 'newest':
+        return sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+      default:
+        return sorted;
+    }
+  };
+
+  const sortedProducts = sortProducts(phoneSpareProducts, sortBy);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -104,26 +126,17 @@ const PhoneSpares = () => {
           </div>
 
           {/* Filters & Sort */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {phoneSpareProducts.length} products found
-              </span>
-            </div>
-            <div className="flex items-center gap-4">
-              <select className="px-3 py-2 bg-muted border border-border rounded-md text-sm">
-                <option>Sort by: Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Customer Rating</option>
-                <option>Newest First</option>
-              </select>
-            </div>
+          <div className="mb-8">
+            <SortFilter 
+              currentSort={sortBy}
+              onSortChange={setSortBy}
+              productCount={phoneSpareProducts.length}
+            />
           </div>
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {phoneSpareProducts.map((product) => (
+            {sortedProducts.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}
           </div>

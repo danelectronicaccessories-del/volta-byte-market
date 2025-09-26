@@ -36,7 +36,9 @@ const ProductCard = ({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    await addToCart(id);
+    if (user) {
+      await addToCart(id);
+    }
   };
   return (
     <div className="group bg-card rounded-lg border border-border shadow-card hover:shadow-product transition-all duration-300 hover:-translate-y-1 overflow-hidden">

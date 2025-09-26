@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock product data - in real app this would come from API
 const mockProducts = {
@@ -109,6 +111,8 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { addToCart, loading } = useCart();
+  const { user } = useAuth();
 
   const product = mockProducts[id as keyof typeof mockProducts];
 
@@ -127,6 +131,12 @@ const ProductDetail = () => {
 
   const handleQuantityChange = (change: number) => {
     setQuantity(Math.max(1, Math.min(quantity + change, product.stockCount)));
+  };
+
+  const handleAddToCart = async () => {
+    if (user) {
+      await addToCart(id!, quantity);
+    }
   };
 
   return (
@@ -242,9 +252,13 @@ const ProductDetail = () => {
                   </div>
 
                   <div className="flex gap-3">
-                    <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
+                    <Button 
+                      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      onClick={handleAddToCart}
+                      disabled={loading || !user}
+                    >
                       <ShoppingCart className="h-4 w-4 mr-2" />
-                      Add to Cart
+                      {!user ? 'Sign in to Add' : 'Add to Cart'}
                     </Button>
                     <Button
                       variant="outline"

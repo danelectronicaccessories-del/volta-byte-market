@@ -7,11 +7,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import CartDrawer from "@/components/CartDrawer";
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const categories = [
     { name: "Phones", href: "/phones" },
@@ -70,7 +72,12 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Heart className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative"
+              onClick={() => setIsCartOpen(true)}
+            >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
                 <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
@@ -90,6 +97,9 @@ const Header = () => {
                   <DropdownMenuItem className="text-sm font-medium">
                     {user.email}
                   </DropdownMenuItem>
+                  <Link to="/orders">
+                    <DropdownMenuItem>My Orders</DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -143,6 +153,9 @@ const Header = () => {
           </nav>
         </div>
       )}
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 };
