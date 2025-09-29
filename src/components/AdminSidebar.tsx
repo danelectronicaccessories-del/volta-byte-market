@@ -57,8 +57,8 @@ export function AdminSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
       isActive 
-        ? "bg-primary text-primary-foreground font-medium" 
-        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
+        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
     }`;
 
   const handleSignOut = async () => {
@@ -67,18 +67,18 @@ export function AdminSidebar() {
   };
 
   return (
-    <Sidebar className={`${collapsed ? "w-16" : "w-64"} bg-card border-r`}>
-      <SidebarContent className="bg-card">
+    <Sidebar className={`${collapsed ? "w-16" : "w-64"} bg-sidebar border-r border-sidebar-border`}>
+      <SidebarContent className="bg-sidebar">
         {/* Header */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-primary-foreground" />
+            <div className="w-8 h-8 bg-sidebar-primary rounded flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-sidebar-primary-foreground" />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="font-semibold text-sm">Admin Panel</h1>
-                <p className="text-xs text-muted-foreground">v3.0</p>
+                <h1 className="font-semibold text-sm text-sidebar-foreground">Admin Panel</h1>
+                <p className="text-xs text-sidebar-foreground/70">v3.0</p>
               </div>
             )}
           </div>
@@ -86,7 +86,7 @@ export function AdminSidebar() {
 
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wider">
             {!collapsed && "Main Navigation"}
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-2">
@@ -107,7 +107,7 @@ export function AdminSidebar() {
 
         {/* Widgets Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wider">
             {!collapsed && "Widgets"}
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-2">
@@ -127,10 +127,10 @@ export function AdminSidebar() {
         </SidebarGroup>
 
         {/* Sign Out */}
-        <div className="mt-auto p-2 border-t">
+        <div className="mt-auto p-2 border-t border-sidebar-border">
           <button
             onClick={handleSignOut}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-muted-foreground hover:bg-muted hover:text-foreground ${
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
               collapsed ? 'justify-center' : ''
             }`}
           >
