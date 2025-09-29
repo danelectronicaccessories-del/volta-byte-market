@@ -16,8 +16,11 @@ import {
   Calendar,
   BarChart3,
   MessageSquare,
-  CheckSquare
+  CheckSquare,
+  Menu
 } from "lucide-react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 
 interface DashboardStats {
   totalOrders: number;
@@ -102,29 +105,29 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-white" />
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AdminSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-card shadow-sm border-b">
+            <div className="flex items-center justify-between px-6 py-4">
+              <div className="flex items-center gap-3">
+                <SidebarTrigger>
+                  <Menu className="w-5 h-5" />
+                </SidebarTrigger>
+                <h1 className="text-xl font-semibold">Admin Dashboard</h1>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground">Welcome back, Admin</span>
+              </div>
             </div>
-            <h1 className="text-xl font-semibold text-slate-900">Admin Dashboard</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-600">Welcome back, Admin</span>
-            <Button onClick={handleSignOut} variant="outline" size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </header>
+          </header>
 
-      <div className="p-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <main className="flex-1 p-6 bg-muted/30">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium opacity-90">Total Orders</CardTitle>
@@ -350,9 +353,11 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
+            </div>
+          </main>
         </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
