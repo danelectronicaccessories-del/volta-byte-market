@@ -24,7 +24,8 @@ const Checkout = () => {
     phoneNumber: '',
     address: '',
     city: '',
-    postalCode: ''
+    postalCode: '',
+    mpesaTransactionId: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,15 +41,16 @@ const Checkout = () => {
       // Create order
       const { data: order, error: orderError } = await supabase
         .from('orders')
-        .insert({
+        .insert([{
           user_id: user.id,
           total_amount: totalAmount,
           phone_number: formData.phoneNumber,
           shipping_address: formData.address,
           shipping_city: formData.city,
           shipping_postal_code: formData.postalCode,
-          status: 'pending'
-        })
+          mpesa_transaction_id: formData.mpesaTransactionId || null,
+          status: formData.mpesaTransactionId ? 'payment_confirmed' : 'pending'
+        }])
         .select()
         .single();
 
@@ -215,6 +217,22 @@ const Checkout = () => {
                     />
                   </div>
                 </div>
+
+                <div>
+                  <Label htmlFor="mpesaTransactionId">
+                    M-Pesa Transaction ID (Optional)
+                  </Label>
+                  <Input
+                    id="mpesaTransactionId"
+                    name="mpesaTransactionId"
+                    placeholder="e.g., QA12BC3456"
+                    value={formData.mpesaTransactionId}
+                    onChange={handleInputChange}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter your M-Pesa transaction code after payment
+                  </p>
+                </div>
               </form>
             </div>
 
@@ -223,13 +241,34 @@ const Checkout = () => {
                 <CreditCard className="h-5 w-5" />
                 Payment Method
               </h2>
-              <div className="bg-muted/20 rounded-lg p-4 text-center">
-                <p className="text-muted-foreground">
-                  Cash on Delivery (COD) Available
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Pay when your order arrives at your doorstep
-                </p>
+              <div className="space-y-4">
+                <div className="bg-primary/10 border border-primary rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-card-foreground">M-Pesa Payment</span>
+                    <span className="text-sm text-primary">Recommended</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Pay securely via M-Pesa Buy Goods
+                  </p>
+                  <div className="bg-background rounded p-3 text-center">
+                    <p className="text-xs text-muted-foreground mb-1">Till Number</p>
+                    <p className="text-2xl font-bold text-card-foreground tracking-wider">242435</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    1. Go to M-Pesa on your phone<br/>
+                    2. Select Lipa na M-Pesa → Buy Goods<br/>
+                    3. Enter till number: <strong>242435</strong><br/>
+                    4. Enter amount and confirm
+                  </p>
+                </div>
+                <div className="bg-muted/20 rounded-lg p-4">
+                  <p className="text-muted-foreground text-center">
+                    Cash on Delivery (COD) Also Available
+                  </p>
+                  <p className="text-sm text-muted-foreground text-center mt-2">
+                    Pay when your order arrives at your doorstep
+                  </p>
+                </div>
               </div>
             </div>
           </div>
