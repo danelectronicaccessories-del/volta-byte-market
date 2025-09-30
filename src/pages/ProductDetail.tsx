@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Star, Heart, ShoppingCart, Minus, Plus, Shield, Truck, RotateCcw } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -896,6 +896,8 @@ const ProductDetail = () => {
     setQuantity(Math.max(1, Math.min(quantity + change, product.stockCount)));
   };
 
+  const navigate = useNavigate();
+
   const handleAddToCart = async () => {
     if (user) {
       await addToCart(id!, quantity);
@@ -1033,8 +1035,18 @@ const ProductDetail = () => {
                     </Button>
                   </div>
 
-                  <Button variant="outline" className="w-full">
-                    Buy Now
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      if (user) {
+                        await addToCart(id as string, quantity);
+                        navigate('/checkout');
+                      }
+                    }}
+                    disabled={loading || !user}
+                  >
+                    {!user ? 'Sign in to Buy' : 'Buy Now'}
                   </Button>
                 </div>
 

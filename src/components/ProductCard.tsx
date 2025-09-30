@@ -1,7 +1,7 @@
-import { Star, Heart, ShoppingCart } from "lucide-react";
+import { Star, Heart, ShoppingCart, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -32,6 +32,7 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const { addToCart, loading } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -72,17 +73,36 @@ const ProductCard = ({
           <Heart className="h-4 w-4" fill={isFavorite ? "currentColor" : "none"} />
         </Button>
         
-        {/* Quick add to cart */}
+        {/* Quick action buttons */}
         <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" 
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={loading || !user}
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            {!user ? 'Sign in to Add' : 'Add to Cart'}
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              onClick={handleAddToCart}
+              disabled={loading || !user}
+            >
+              <ShoppingCart className="h-3 w-3 mr-1" />
+              {!user ? 'Sign in' : 'Add'}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="bg-background/90 backdrop-blur-sm"
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (user) {
+                  await addToCart(id, 1);
+                  navigate('/checkout');
+                }
+              }}
+              disabled={loading || !user}
+            >
+              <Zap className="h-3 w-3 mr-1" />
+              Buy
+            </Button>
+          </div>
         </div>
         </div>
       </Link>
