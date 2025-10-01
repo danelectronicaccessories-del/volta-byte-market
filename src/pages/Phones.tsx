@@ -1,77 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import SortFilter, { SortOption } from "@/components/SortFilter";
-
-// Mock phone products data
-const phoneProducts = [
-  {
-    id: "phone-1",
-    name: "iPhone 15 Pro Max 256GB - Natural Titanium",
-    image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop",
-    price: 899.99,
-    originalPrice: 1199.99,
-    rating: 4.8,
-    reviewCount: 2341,
-    discount: 25,
-    isNew: true
-  },
-  {
-    id: "phone-2",
-    name: "Samsung Galaxy S24 Ultra 512GB - Phantom Black",
-    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
-    price: 799.99,
-    originalPrice: 999.99,
-    rating: 4.7,
-    reviewCount: 1892,
-    discount: 20
-  },
-  {
-    id: "phone-3",
-    name: "Google Pixel 8 Pro 128GB - Bay Blue",
-    image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&h=400&fit=crop",
-    price: 649.99,
-    originalPrice: 799.99,
-    rating: 4.6,
-    reviewCount: 1456,
-    discount: 19
-  },
-  {
-    id: "phone-4",
-    name: "OnePlus 12 256GB - Flowy Emerald",
-    image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&h=400&fit=crop",
-    price: 549.99,
-    originalPrice: 699.99,
-    rating: 4.5,
-    reviewCount: 987,
-    discount: 21
-  },
-  {
-    id: "phone-5",
-    name: "Xiaomi 14 Ultra 512GB - Black",
-    image: "https://images.unsplash.com/photo-1512499617640-c2f999c82a52?w=400&h=400&fit=crop",
-    price: 459.99,
-    originalPrice: 599.99,
-    rating: 4.4,
-    reviewCount: 756,
-    discount: 23
-  },
-  {
-    id: "phone-6",
-    name: "Nothing Phone (2) 256GB - Dark Grey",
-    image: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=400&fit=crop",
-    price: 399.99,
-    rating: 4.3,
-    reviewCount: 542,
-    isNew: true
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const Phones = () => {
+  const [phones, setPhones] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortOption>('featured');
 
-  const sortProducts = (products: typeof phoneProducts, sortOption: SortOption) => {
+  useEffect(() => {
+    const loadPhones = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category', 'phones');
+        
+        if (error) throw error;
+        setPhones(data || []);
+      } catch (error) {
+        console.error('Error loading phones:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPhones();
+  }, []);
+
+  const sortProducts = (products: any[], sortOption: SortOption) => {
     const sorted = [...products];
     switch (sortOption) {
       case 'price-low':
@@ -79,15 +39,15 @@ const Phones = () => {
       case 'price-high':
         return sorted.sort((a, b) => b.price - a.price);
       case 'rating':
-        return sorted.sort((a, b) => b.rating - a.rating);
+        return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
       case 'newest':
-        return sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        return sorted.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
       default:
         return sorted;
     }
   };
 
-  const sortedProducts = sortProducts(phoneProducts, sortBy);
+  const sortedProducts = sortProducts(phones, sortBy);
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,20 +65,41 @@ const Phones = () => {
           </div>
 
           {/* Filters & Sort */}
-          <div className="mb-8">
-            <SortFilter 
-              currentSort={sortBy}
-              onSortChange={setSortBy}
-              productCount={phoneProducts.length}
-            />
-          </div>
+          {!loading && phones.length > 0 && (
+            <div className="mb-8">
+              <SortFilter 
+                currentSort={sortBy}
+                onSortChange={setSortBy}
+                productCount={phones.length}
+              />
+            </div>
+          )}
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sortedProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : phones.length === 0 ? (
+            <p className="text-center text-muted-foreground py-12">No phones available</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {sortedProducts.map((phone) => (
+                <ProductCard 
+                  key={phone.id} 
+                  id={phone.id}
+                  name={phone.name}
+                  image={phone.image_url}
+                  price={phone.price}
+                  originalPrice={phone.original_price}
+                  rating={phone.rating}
+                  reviewCount={phone.review_count}
+                  discount={phone.discount_percentage}
+                  isNew={phone.is_featured}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />
