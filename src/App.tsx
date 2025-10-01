@@ -15,6 +15,8 @@ import Audio from "./pages/Audio";
 import Gaming from "./pages/Gaming";
 import Cameras from "./pages/Cameras";
 import Wearables from "./pages/Wearables";
+import Tvs from "./pages/Tvs";
+import Fridges from "./pages/Fridges";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
@@ -22,6 +24,7 @@ import Auth from "./pages/Auth";
 import AdminAuth from "./pages/AdminAuth";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminOrders from "./pages/AdminOrders";
+import AdminProducts from "./pages/AdminProducts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +48,8 @@ const App = () => (
               <Route path="/gaming" element={<Gaming />} />
               <Route path="/cameras" element={<Cameras />} />
               <Route path="/wearables" element={<Wearables />} />
+              <Route path="/tvs" element={<Tvs />} />
+              <Route path="/fridges" element={<Fridges />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/orders" element={<Orders />} />
@@ -52,6 +57,7 @@ const App = () => (
           <Route path="/admin/auth" element={<AdminAuth />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -24,7 +24,9 @@ const Header = () => {
     { name: "Audio", href: "/audio" },
     { name: "Gaming", href: "/gaming" },
     { name: "Cameras", href: "/cameras" },
-    { name: "Wearables", href: "/wearables" }
+    { name: "Wearables", href: "/wearables" },
+    { name: "TVs", href: "/tvs" },
+    { name: "Fridges", href: "/fridges" }
   ];
 
   return (

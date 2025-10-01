@@ -18,7 +18,7 @@ interface Product {
   brand: string | null;
 }
 
-const Accessories = () => {
+const Tvs = () => {
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -34,10 +34,10 @@ const Accessories = () => {
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .eq('category', 'accessories');
+      .eq('category', 'tvs');
     
     if (error) {
-      console.error('Error loading accessories:', error);
+      console.error('Error loading TVs:', error);
     } else {
       setProducts(data || []);
     }
@@ -81,8 +81,8 @@ const Accessories = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Accessories</h1>
-          <p className="text-muted-foreground">Essential tech accessories to enhance your devices</p>
+          <h1 className="text-3xl font-bold mb-2">TVs & Displays</h1>
+          <p className="text-muted-foreground">Smart TVs, monitors, and display solutions</p>
         </div>
 
         <div className="mb-8">
@@ -104,7 +104,7 @@ const Accessories = () => {
           </div>
         ) : sortedProducts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-muted-foreground">No accessories available</p>
+            <p className="text-muted-foreground">No TVs available</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -129,4 +129,4 @@ const Accessories = () => {
   );
 };
 
-export default Accessories;
+export default Tvs;
