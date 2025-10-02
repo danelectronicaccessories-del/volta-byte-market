@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Plus, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 interface Product {
@@ -26,6 +26,7 @@ interface Product {
   stock_quantity: number;
   image_url: string | null;
   discount_percentage: number;
+  condition: 'new' | 'refurbished';
 }
 
 const categories = [
@@ -51,6 +52,8 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState<{
     name: string;
     price: string;
@@ -61,6 +64,7 @@ const AdminProducts = () => {
     stock_quantity: string;
     image_url: string;
     discount_percentage: string;
+    condition: 'new' | 'refurbished';
   }>({
     name: '',
     price: '',
@@ -70,7 +74,8 @@ const AdminProducts = () => {
     description: '',
     stock_quantity: '0',
     image_url: '',
-    discount_percentage: '0'
+    discount_percentage: '0',
+    condition: 'new'
   });
 
   useEffect(() => {
@@ -97,8 +102,49 @@ const AdminProducts = () => {
     setLoading(false);
   };
 
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      setUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    let imageUrl = formData.image_url;
+    
+    // Upload new image if file is selected
+    if (imageFile) {
+      const uploadedUrl = await uploadImage(imageFile);
+      if (uploadedUrl) {
+        imageUrl = uploadedUrl;
+      } else {
+        return; // Stop if upload failed
+      }
+    }
     
     const productData = {
       name: formData.name,
@@ -108,8 +154,9 @@ const AdminProducts = () => {
       brand: formData.brand || null,
       description: formData.description || null,
       stock_quantity: parseInt(formData.stock_quantity),
-      image_url: formData.image_url || null,
-      discount_percentage: parseInt(formData.discount_percentage)
+      image_url: imageUrl || null,
+      discount_percentage: parseInt(formData.discount_percentage),
+      condition: formData.condition
     };
 
     if (editingProduct) {
@@ -146,6 +193,7 @@ const AdminProducts = () => {
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
+    setImageFile(null);
     setFormData({
       name: product.name,
       price: product.price.toString(),
@@ -155,7 +203,8 @@ const AdminProducts = () => {
       description: product.description || '',
       stock_quantity: product.stock_quantity.toString(),
       image_url: product.image_url || '',
-      discount_percentage: product.discount_percentage.toString()
+      discount_percentage: product.discount_percentage.toString(),
+      condition: product.condition || 'new'
     });
     setIsDialogOpen(true);
   };
@@ -179,6 +228,7 @@ const AdminProducts = () => {
 
   const resetForm = () => {
     setEditingProduct(null);
+    setImageFile(null);
     setFormData({
       name: '',
       price: '',
@@ -188,7 +238,8 @@ const AdminProducts = () => {
       description: '',
       stock_quantity: '0',
       image_url: '',
-      discount_percentage: '0'
+      discount_percentage: '0',
+      condition: 'new'
     });
   };
 
@@ -295,12 +346,36 @@ const AdminProducts = () => {
                         />
                       </div>
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>Condition</Label>
+                        <Select value={formData.condition} onValueChange={(value: 'new' | 'refurbished') => setFormData({ ...formData, condition: value })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="new">New</SelectItem>
+                            <SelectItem value="refurbished">Refurbished</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                     <div>
-                      <Label>Image URL</Label>
-                      <Input
-                        value={formData.image_url}
-                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      />
+                      <Label>Product Image</Label>
+                      <div className="space-y-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                          className="cursor-pointer"
+                        />
+                        {(formData.image_url || imageFile) && (
+                          <div className="text-sm text-muted-foreground flex items-center gap-2">
+                            <Upload className="h-4 w-4" />
+                            {imageFile ? imageFile.name : 'Current image will be kept'}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div>
                       <Label>Description</Label>
@@ -310,8 +385,15 @@ const AdminProducts = () => {
                         rows={4}
                       />
                     </div>
-                    <Button type="submit" className="w-full">
-                      {editingProduct ? 'Update Product' : 'Create Product'}
+                    <Button type="submit" className="w-full" disabled={uploading}>
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>{editingProduct ? 'Update Product' : 'Create Product'}</>
+                      )}
                     </Button>
                   </form>
                 </DialogContent>
