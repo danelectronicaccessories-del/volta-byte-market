@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreditCard, MapPin, Phone, User, Mail } from "lucide-react";
+import { CreditCard, MapPin, Phone, User, Mail, AlertCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +18,7 @@ const Checkout = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -35,6 +37,17 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Show validation if form is not complete
+    if (!isFormValid) {
+      setShowValidation(true);
+      toast({
+        title: "Incomplete Form",
+        description: "Please fill in all required fields including your M-Pesa Transaction ID",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setLoading(true);
     try {
@@ -149,12 +162,22 @@ const Checkout = () => {
                 <MapPin className="h-5 w-5" />
                 Shipping Information
               </h2>
+              
+              {!isFormValid && showValidation && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Please complete all required fields below to proceed with your order.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="fullName" className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      Full Name
+                      Full Name <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="fullName"
@@ -162,12 +185,13 @@ const Checkout = () => {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       required
+                      className={showValidation && !formData.fullName.trim() ? 'border-destructive' : ''}
                     />
                   </div>
                   <div>
                     <Label htmlFor="email" className="flex items-center gap-2">
                       <Mail className="h-4 w-4" />
-                      Email
+                      Email <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="email"
@@ -176,6 +200,7 @@ const Checkout = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      className={showValidation && !formData.email.trim() ? 'border-destructive' : ''}
                     />
                   </div>
                 </div>
@@ -183,7 +208,7 @@ const Checkout = () => {
                 <div>
                   <Label htmlFor="phoneNumber" className="flex items-center gap-2">
                     <Phone className="h-4 w-4" />
-                    Phone Number
+                    Phone Number <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="phoneNumber"
@@ -191,45 +216,49 @@ const Checkout = () => {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
+                    className={showValidation && !formData.phoneNumber.trim() ? 'border-destructive' : ''}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address">Address <span className="text-destructive">*</span></Label>
                   <Input
                     id="address"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
                     required
+                    className={showValidation && !formData.address.trim() ? 'border-destructive' : ''}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">City <span className="text-destructive">*</span></Label>
                     <Input
                       id="city"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
                       required
+                      className={showValidation && !formData.city.trim() ? 'border-destructive' : ''}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Label htmlFor="postalCode">Postal Code <span className="text-destructive">*</span></Label>
                     <Input
                       id="postalCode"
                       name="postalCode"
                       value={formData.postalCode}
                       onChange={handleInputChange}
                       required
+                      className={showValidation && !formData.postalCode.trim() ? 'border-destructive' : ''}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="mpesaTransactionId">
+                  <Label htmlFor="mpesaTransactionId" className="flex items-center gap-2">
                     M-Pesa Transaction ID <span className="text-destructive">*</span>
                   </Label>
                   <Input
@@ -239,9 +268,10 @@ const Checkout = () => {
                     value={formData.mpesaTransactionId}
                     onChange={handleInputChange}
                     required
+                    className={showValidation && !formData.mpesaTransactionId.trim() ? 'border-destructive' : ''}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Enter your M-Pesa transaction code after payment
+                    ⚠️ Required: Enter your M-Pesa transaction code after making payment to Till 242435
                   </p>
                 </div>
               </form>
@@ -343,6 +373,21 @@ const Checkout = () => {
                 </div>
               )}
 
+              
+              {!isFormValid && (
+                <Alert className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Before placing your order:</strong>
+                    <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                      <li>Complete all shipping information fields</li>
+                      <li>Make payment via M-Pesa to Till: <strong>242435</strong></li>
+                      <li>Enter your M-Pesa Transaction ID</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <Button 
                 onClick={handleSubmit}
                 disabled={loading || !isFormValid}
@@ -351,8 +396,8 @@ const Checkout = () => {
                 {loading ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
               </Button>
               {!isFormValid && (
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  Please fill in all required fields including the M-Pesa Transaction ID
+                <p className="text-xs text-destructive text-center mt-2 font-medium">
+                  ⚠️ Please complete all required fields to proceed
                 </p>
               )}
             </div>
