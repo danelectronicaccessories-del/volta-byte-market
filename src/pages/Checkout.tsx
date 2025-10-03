@@ -125,6 +125,16 @@ const Checkout = () => {
   const tax = subtotal * 0.08; // 8% tax
   const total = subtotal + shipping + tax;
 
+  // Check if all required fields are filled
+  const isFormValid = 
+    formData.fullName.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    formData.phoneNumber.trim() !== '' &&
+    formData.address.trim() !== '' &&
+    formData.city.trim() !== '' &&
+    formData.postalCode.trim() !== '' &&
+    formData.mpesaTransactionId.trim() !== '';
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -220,7 +230,7 @@ const Checkout = () => {
 
                 <div>
                   <Label htmlFor="mpesaTransactionId">
-                    M-Pesa Transaction ID (Optional)
+                    M-Pesa Transaction ID <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="mpesaTransactionId"
@@ -228,6 +238,7 @@ const Checkout = () => {
                     placeholder="e.g., QA12BC3456"
                     value={formData.mpesaTransactionId}
                     onChange={handleInputChange}
+                    required
                   />
                   <p className="text-xs text-muted-foreground mt-1">
                     Enter your M-Pesa transaction code after payment
@@ -334,11 +345,16 @@ const Checkout = () => {
 
               <Button 
                 onClick={handleSubmit}
-                disabled={loading}
-                className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={loading || !isFormValid}
+                className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
               </Button>
+              {!isFormValid && (
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Please fill in all required fields including the M-Pesa Transaction ID
+                </p>
+              )}
             </div>
           </div>
         </div>
