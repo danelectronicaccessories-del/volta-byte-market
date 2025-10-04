@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import SortFilter, { SortOption } from "@/components/SortFilter";
+import SearchFilter from "@/components/SearchFilter";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useProductSearch } from "@/hooks/useProductSearch";
 
 const Phones = () => {
   const [phones, setPhones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<SortOption>('featured');
 
   useEffect(() => {
     const loadPhones = async () => {
@@ -31,23 +31,17 @@ const Phones = () => {
     loadPhones();
   }, []);
 
-  const sortProducts = (products: any[], sortOption: SortOption) => {
-    const sorted = [...products];
-    switch (sortOption) {
-      case 'price-low':
-        return sorted.sort((a, b) => a.price - b.price);
-      case 'price-high':
-        return sorted.sort((a, b) => b.price - a.price);
-      case 'rating':
-        return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      case 'newest':
-        return sorted.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
-      default:
-        return sorted;
-    }
-  };
-
-  const sortedProducts = sortProducts(phones, sortBy);
+  const {
+    sortBy,
+    setSortBy,
+    searchQuery,
+    setSearchQuery,
+    selectedBrands,
+    brands,
+    handleBrandToggle,
+    filteredProducts,
+    sortedProducts,
+  } = useProductSearch(phones);
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,10 +61,15 @@ const Phones = () => {
           {/* Filters & Sort */}
           {!loading && phones.length > 0 && (
             <div className="mb-8">
-              <SortFilter 
+              <SearchFilter 
                 currentSort={sortBy}
                 onSortChange={setSortBy}
-                productCount={phones.length}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                brands={brands}
+                selectedBrands={selectedBrands}
+                onBrandToggle={handleBrandToggle}
+                productCount={filteredProducts.length}
               />
             </div>
           )}
@@ -80,8 +79,12 @@ const Phones = () => {
             <div className="flex justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-          ) : phones.length === 0 ? (
-            <p className="text-center text-muted-foreground py-12">No phones available</p>
+          ) : filteredProducts.length === 0 ? (
+            <p className="text-center text-muted-foreground py-12">
+              {searchQuery || selectedBrands.length > 0 
+                ? "No phones found matching your filters" 
+                : "No phones available"}
+            </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sortedProducts.map((phone) => (

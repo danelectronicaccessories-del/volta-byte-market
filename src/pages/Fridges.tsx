@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
-import SearchFilter, { SortOption } from "@/components/SearchFilter";
+import SearchFilter from "@/components/SearchFilter";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useProductSearch } from "@/hooks/useProductSearch";
 
 interface Product {
   id: string;
@@ -19,9 +20,6 @@ interface Product {
 }
 
 const Fridges = () => {
-  const [sortBy, setSortBy] = useState<SortOption>('featured');
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,37 +42,17 @@ const Fridges = () => {
     setLoading(false);
   };
 
-  const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean))) as string[];
-
-  const handleBrandToggle = (brand: string) => {
-    setSelectedBrands(prev => 
-      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-    );
-  };
-
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesBrand = selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand));
-    return matchesSearch && matchesBrand;
-  });
-
-  const sortProducts = (products: Product[], sortOption: SortOption) => {
-    const sorted = [...products];
-    switch (sortOption) {
-      case 'price-low':
-        return sorted.sort((a, b) => a.price - b.price);
-      case 'price-high':
-        return sorted.sort((a, b) => b.price - a.price);
-      case 'rating':
-        return sorted.sort((a, b) => b.rating - a.rating);
-      case 'newest':
-        return sorted.sort((a, b) => (b.discount_percentage || 0) - (a.discount_percentage || 0));
-      default:
-        return sorted;
-    }
-  };
-
-  const sortedProducts = sortProducts(filteredProducts, sortBy);
+  const {
+    sortBy,
+    setSortBy,
+    searchQuery,
+    setSearchQuery,
+    selectedBrands,
+    brands,
+    handleBrandToggle,
+    filteredProducts,
+    sortedProducts,
+  } = useProductSearch(products);
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,7 +82,11 @@ const Fridges = () => {
           </div>
         ) : sortedProducts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-muted-foreground">No fridges available</p>
+            <p className="text-muted-foreground">
+              {searchQuery || selectedBrands.length > 0 
+                ? "No fridges found matching your filters" 
+                : "No fridges available"}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
