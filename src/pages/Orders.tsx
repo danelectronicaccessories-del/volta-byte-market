@@ -175,7 +175,7 @@ const Orders = () => {
                     </Badge>
                     <div className="text-right">
                       <p className="text-lg font-bold text-card-foreground">
-                        ${order.total_amount.toFixed(2)}
+                        KES {order.total_amount.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -206,12 +206,12 @@ const Orders = () => {
                           {item.product.name}
                         </h5>
                         <p className="text-sm text-muted-foreground">
-                          Quantity: {item.quantity} × ${item.unit_price.toFixed(2)}
+                          Quantity: {item.quantity} × KES {item.unit_price.toFixed(2)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-card-foreground">
-                          ${item.total_price.toFixed(2)}
+                          KES {item.total_price.toFixed(2)}
                         </p>
                       </div>
                     </div>

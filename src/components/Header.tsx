@@ -48,7 +48,7 @@ const Header = () => {
       <div className="bg-gradient-sale py-2">
         <div className="container mx-auto px-4">
           <p className="text-center text-sale-foreground text-sm font-medium">
-            🔥 Flash Sale: Up to 70% OFF Electronics | Free Shipping on orders over $50
+            🔥 Flash Sale: Up to 70% OFF Electronics | Free Shipping on orders over KES 5000
           </p>
         </div>
       </div>

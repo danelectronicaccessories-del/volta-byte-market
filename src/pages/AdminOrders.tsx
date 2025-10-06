@@ -289,10 +289,10 @@ const AdminOrders = () => {
                                   {item.product.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  Qty: {item.quantity} × ${item.unit_price.toFixed(2)}
+                                  Qty: {item.quantity} × KES {item.unit_price.toFixed(2)}
                                 </p>
                                 <p className="text-sm font-semibold mt-1">
-                                  ${item.total_price.toFixed(2)}
+                                  KES {item.total_price.toFixed(2)}
                                 </p>
                               </div>
                             </div>
@@ -305,7 +305,7 @@ const AdminOrders = () => {
                               Total Amount:
                             </span>
                             <span className="text-xl font-bold text-primary">
-                              ${order.total_amount.toFixed(2)}
+                              KES {order.total_amount.toFixed(2)}
                             </span>
                           </div>
                         </div>

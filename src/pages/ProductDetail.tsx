@@ -185,12 +185,12 @@ const ProductDetail = () => {
               {/* Pricing */}
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl font-bold text-foreground">
-                  ${product.price?.toFixed(2)}
+                  KES {product.price?.toFixed(2)}
                 </span>
                 {product.original_price && product.original_price > product.price && (
                   <>
                     <span className="text-xl text-muted-foreground line-through">
-                      ${product.original_price.toFixed(2)}
+                      KES {product.original_price.toFixed(2)}
                     </span>
                     <Badge variant="destructive">
                       {product.discount_percentage}% OFF

@@ -417,7 +417,7 @@ const AdminProducts = () => {
                       <TableCell>{product.name}</TableCell>
                       <TableCell className="capitalize">{product.category.replace('_', ' ')}</TableCell>
                       <TableCell>{product.brand || '-'}</TableCell>
-                      <TableCell>${product.price}</TableCell>
+                      <TableCell>KES {product.price}</TableCell>
                       <TableCell>{product.stock_quantity}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">

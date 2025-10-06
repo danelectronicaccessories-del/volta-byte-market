@@ -67,7 +67,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                         {item.product.name}
                       </h4>
                       <p className="text-lg font-bold text-card-foreground mt-1">
-                        ${item.product.price.toFixed(2)}
+                        KES {item.product.price.toFixed(2)}
                       </p>
                       
                       {/* Quantity Controls */}
@@ -113,7 +113,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               <div className="flex justify-between items-center">
                 <span className="text-lg font-semibold text-foreground">Total:</span>
                 <span className="text-xl font-bold text-foreground">
-                  ${totalAmount.toFixed(2)}
+                  KES {totalAmount.toFixed(2)}
                 </span>
               </div>
               <Link to="/checkout" onClick={onClose}>

@@ -333,11 +333,11 @@ const Checkout = () => {
                         {item.product.name}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Qty: {item.quantity} × ${item.product.price.toFixed(2)}
+                        Qty: {item.quantity} × KES {item.product.price.toFixed(2)}
                       </p>
                     </div>
                     <div className="text-sm font-medium text-card-foreground">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      KES {(item.product.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
@@ -347,28 +347,28 @@ const Checkout = () => {
               <div className="space-y-2 border-t border-border pt-4">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="text-card-foreground">${subtotal.toFixed(2)}</span>
+                  <span className="text-card-foreground">KES {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
                   <span className="text-card-foreground">
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? 'Free' : `KES ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tax</span>
-                  <span className="text-card-foreground">${tax.toFixed(2)}</span>
+                  <span className="text-card-foreground">KES {tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-lg font-semibold border-t border-border pt-2">
                   <span className="text-card-foreground">Total</span>
-                  <span className="text-card-foreground">${total.toFixed(2)}</span>
+                  <span className="text-card-foreground">KES {total.toFixed(2)}</span>
                 </div>
               </div>
 
               {shipping > 0 && (
                 <div className="mt-4 p-3 bg-muted/20 rounded-lg">
                   <p className="text-sm text-muted-foreground">
-                    💡 Add ${(50 - subtotal).toFixed(2)} more for free shipping!
+                    💡 Add KES {(50 - subtotal).toFixed(2)} more for free shipping!
                   </p>
                 </div>
               )}
@@ -393,7 +393,7 @@ const Checkout = () => {
                 disabled={loading || !isFormValid}
                 className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
+                {loading ? 'Placing Order...' : `Place Order - KES ${total.toFixed(2)}`}
               </Button>
               {!isFormValid && (
                 <p className="text-xs text-destructive text-center mt-2 font-medium">
