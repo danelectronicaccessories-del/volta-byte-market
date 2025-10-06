@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import CartDrawer from "@/components/CartDrawer";
@@ -12,8 +12,18 @@ import CartDrawer from "@/components/CartDrawer";
 const Header = () => {
   const { user, signOut } = useAuth();
   const { totalItems } = useCart();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
 
   const categories = [
     { name: "Phones", href: "/phones" },
@@ -61,13 +71,22 @@ const Header = () => {
           </div>
           
           {/* Search bar */}
-          <div className="flex-1 max-w-2xl relative">
+          <form onSubmit={handleSearch} className="flex-1 max-w-2xl relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input 
               placeholder="Search for electronics..." 
-              className="pl-10 bg-muted/50 border-0 focus:bg-background transition-smooth"
+              className="pl-10 pr-20 bg-muted/50 border-0 focus:bg-background transition-smooth"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+            <Button 
+              type="submit"
+              size="sm"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            >
+              Search
+            </Button>
+          </form>
           
           {/* Action buttons */}
           <div className="flex items-center gap-2">
