@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, ShoppingCart, User, Menu, Heart, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,13 +17,16 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
-    }
-  };
+  // Auto-search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, navigate]);
 
   const categories = [
     { name: "Phones", href: "/phones" },
@@ -71,22 +74,15 @@ const Header = () => {
           </div>
           
           {/* Search bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl relative">
+          <div className="flex-1 max-w-2xl relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input 
               placeholder="Search for electronics..." 
-              className="pl-10 pr-20 bg-muted/50 border-0 focus:bg-background transition-smooth"
+              className="pl-10 bg-muted/50 border-0 focus:bg-background transition-smooth"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Button 
-              type="submit"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2"
-            >
-              Search
-            </Button>
-          </form>
+          </div>
           
           {/* Action buttons */}
           <div className="flex items-center gap-2">
