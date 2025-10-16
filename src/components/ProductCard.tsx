@@ -41,108 +41,78 @@ const ProductCard = ({
       await addToCart(id);
     }
   };
+
+  // Simulate sales count (in production, this would come from backend)
+  const salesCount = Math.floor(Math.random() * 10000) + 100;
+
   return (
-    <div className="group bg-card rounded-lg border border-border shadow-card hover:shadow-product transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-      {/* Image container */}
+    <div className="group bg-card rounded-lg border border-border hover:shadow-lg transition-all duration-300 overflow-hidden">
       <Link to={`/product/${id}`} className="block">
-        <div className="relative aspect-square bg-muted/20 overflow-hidden">
+        {/* Image container */}
+        <div className="relative aspect-square bg-muted overflow-hidden">
           <img 
             src={image} 
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover"
           />
         
-        {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {isNew && (
-            <Badge className="bg-success text-success-foreground">New</Badge>
-          )}
-          {discount && (
-            <Badge className="bg-sale text-sale-foreground">-{discount}%</Badge>
-          )}
-        </div>
-        
-        {/* Favorite button */}
-        <Button
-          size="icon"
-          variant="ghost"
-          className={`absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background transition-smooth ${
-            isFavorite ? "text-red-500" : "text-muted-foreground"
-          }`}
-        >
-          <Heart className="h-4 w-4" fill={isFavorite ? "currentColor" : "none"} />
-        </Button>
-        
-        {/* Quick action buttons */}
-        <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={handleAddToCart}
-              disabled={loading || !user}
-            >
-              <ShoppingCart className="h-3 w-3 mr-1" />
-              {!user ? 'Sign in' : 'Add'}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-background/90 backdrop-blur-sm"
-              onClick={async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (user) {
-                  await addToCart(id, 1);
-                  navigate('/checkout');
-                }
-              }}
-              disabled={loading || !user}
-            >
-              <Zap className="h-3 w-3 mr-1" />
-              Buy
-            </Button>
+          {/* Badges */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            <Badge className="bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 font-semibold">
+              Local
+            </Badge>
+            {discount && (
+              <Badge className="bg-sale text-sale-foreground text-[10px] px-1.5 py-0.5">
+                Early Black Friday
+              </Badge>
+            )}
           </div>
-        </div>
         </div>
       </Link>
       
       {/* Product info */}
-      <div className="p-4">
+      <div className="p-3">
         <Link to={`/product/${id}`}>
-          <h3 className="font-medium text-card-foreground line-clamp-2 mb-2 group-hover:text-primary transition-smooth">
+          <h3 className="text-sm text-card-foreground line-clamp-2 mb-2 min-h-[2.5rem]">
             {name}
           </h3>
         </Link>
         
-        {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3 w-3 ${
-                  i < Math.floor(rating)
-                    ? "text-yellow-400 fill-current"
-                    : "text-muted-foreground"
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground">({reviewCount})</span>
-        </div>
-        
         {/* Price */}
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-card-foreground">
-            KES {price.toFixed(2)}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-lg font-bold text-sale">
+            KES {price.toLocaleString()}
           </span>
           {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              KES {originalPrice.toFixed(2)}
+            <span className="text-xs text-muted-foreground line-through">
+              KES {originalPrice.toLocaleString()}
             </span>
           )}
+          {discount && (
+            <Badge className="bg-muted text-muted-foreground text-[10px] px-1 py-0">
+              {discount}% off
+            </Badge>
+          )}
         </div>
+
+        {/* Sales count & RRP */}
+        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+          <span>{salesCount.toLocaleString()} sold</span>
+          {originalPrice && (
+            <span>RRP KES {originalPrice.toLocaleString()}</span>
+          )}
+        </div>
+        
+        {/* Add to cart button */}
+        <Button
+          size="sm"
+          className="w-full bg-card border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors rounded-full h-8 text-xs"
+          onClick={handleAddToCart}
+          disabled={loading || !user}
+        >
+          <ShoppingCart className="h-3 w-3 mr-1" />
+          {!user ? 'Sign in to buy' : 'Add to cart'}
+        </Button>
       </div>
     </div>
   );

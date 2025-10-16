@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import HeroBanner from "@/components/HeroBanner";
 import ProductGrid from "@/components/ProductGrid";
 import Footer from "@/components/Footer";
+import CategoryCarousel from "@/components/CategoryCarousel";
 
 const Index = () => {
   return (
@@ -9,6 +10,7 @@ const Index = () => {
       <Header />
       <main>
         <HeroBanner />
+        <CategoryCarousel />
         <ProductGrid />
       </main>
       <Footer />

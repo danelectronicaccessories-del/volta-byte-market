@@ -1,23 +1,27 @@
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, User, Menu, Heart, X, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
+import { Menu, Search, Heart, ShoppingCart, User, LogOut, Package, ChevronDown, Globe, Smartphone, Laptop, Tv, Camera, Gamepad2, Watch } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
-import CartDrawer from "@/components/CartDrawer";
+import CartDrawer from "./CartDrawer";
+import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
-  const { totalItems } = useCart();
-  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { user, signOut } = useAuth();
+  const { totalItems: itemCount } = useCart();
+  const navigate = useNavigate();
 
-  // Auto-search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.trim()) {
@@ -28,152 +32,236 @@ const Header = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, navigate]);
 
-  const categories = [
-    { name: "Phones", href: "/phones" },
-    { name: "Phone Spares", href: "/phone-spares" },
-    { name: "Laptops", href: "/laptops" },
-    { name: "Accessories", href: "/accessories" },
-    { name: "Smart Devices", href: "/smart-devices" },
-    { name: "Audio", href: "/audio" },
-    { name: "Gaming", href: "/gaming" },
-    { name: "Cameras", href: "/cameras" },
-    { name: "Wearables", href: "/wearables" },
-    { name: "TVs", href: "/tvs" },
-    { name: "Fridges", href: "/fridges" }
-  ];
-
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50">
-      {/* Top banner */}
-      <div className="bg-gradient-sale py-2">
+    <>
+      {/* Top Banner Bar - Temu Style */}
+      <div className="bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-4">
-          <p className="text-center text-sale-foreground text-sm font-medium">
-            🔥 Flash Sale: Up to 70% OFF Electronics | Free Shipping on orders over KES 5000
-          </p>
+          <div className="flex items-center justify-between h-10 text-xs">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-1">
+                <Package className="h-3 w-3" />
+                Free shipping
+              </span>
+              <span className="hidden md:block">Incredible</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link to="/auth" className="hover:text-primary transition-colors hidden md:block">
+                Start Selling to Millions of Buyers on VoltaByte
+              </Link>
+              <Button variant="ghost" size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 text-primary-foreground px-3">
+                Join Now →
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-      
-      {/* Main header */}
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-            <Link to="/">
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Volta
-              </h1>
+
+      {/* Main Header */}
+      <header className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 gap-4">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+              <div className="bg-gradient-primary p-2 rounded-lg">
+                <Package className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold text-foreground hidden sm:block">
+                VoltaByte
+              </span>
             </Link>
-          </div>
-          
-          {/* Search bar */}
-          <div className="flex-1 max-w-2xl relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input 
-              placeholder="Search for electronics..." 
-              className="pl-10 bg-muted/50 border-0 focus:bg-background transition-smooth"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="relative"
-              onClick={() => setIsCartOpen(true)}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
-                  {totalItems}
-                </Badge>
-              )}
-            </Button>
-            
-            {user ? (
+
+            {/* Navigation Links - Desktop */}
+            <nav className="hidden lg:flex items-center gap-1 flex-1">
+              <Link to="/" className="px-3 py-2 text-sm hover:text-primary transition-colors">
+                Best-Selling Items
+              </Link>
+              <Link to="/" className="px-3 py-2 text-sm hover:text-primary transition-colors">
+                5-Star Rated
+              </Link>
+              <Badge className="bg-sale text-sale-foreground px-2 py-1 text-xs">Early Black Friday</Badge>
+              <Link to="/" className="px-3 py-2 text-sm hover:text-primary transition-colors">
+                New In
+              </Link>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
+                <DropdownMenuTrigger className="px-3 py-2 text-sm hover:text-primary transition-colors flex items-center gap-1">
+                  Categories <ChevronDown className="h-3 w-3" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="text-sm font-medium">
-                    {user.email}
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/phones" className="w-full flex items-center gap-2">
+                      <Smartphone className="h-4 w-4" />
+                      Phones
+                    </Link>
                   </DropdownMenuItem>
-                  <Link to="/orders">
-                    <DropdownMenuItem>My Orders</DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuItem onClick={signOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
+                  <DropdownMenuItem asChild>
+                    <Link to="/laptops" className="w-full flex items-center gap-2">
+                      <Laptop className="h-4 w-4" />
+                      Laptops
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/tvs" className="w-full flex items-center gap-2">
+                      <Tv className="h-4 w-4" />
+                      TVs
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/cameras" className="w-full flex items-center gap-2">
+                      <Camera className="h-4 w-4" />
+                      Cameras
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/gaming" className="w-full flex items-center gap-2">
+                      <Gamepad2 className="h-4 w-4" />
+                      Gaming
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/wearables" className="w-full flex items-center gap-2">
+                      <Watch className="h-4 w-4" />
+                      Wearables
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Link to="/auth">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+            </nav>
+
+            {/* Search Bar */}
+            <div className="flex-1 max-w-xl">
+              <div className="relative">
+                <Input
+                  type="search"
+                  placeholder="Search for products..."
+                  className="w-full pr-10 bg-muted/50 border-border focus:bg-background transition-colors"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button 
+                  size="icon"
+                  className="absolute right-0 top-0 h-full rounded-l-none bg-primary hover:bg-primary/90"
+                >
+                  <Search className="h-4 w-4" />
                 </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {/* Desktop Category navigation */}
-      <nav className="border-t border-border bg-secondary/30 hidden md:block">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-8 py-3 overflow-x-auto">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                to={category.href}
-                className="text-sm font-medium whitespace-nowrap hover:text-primary transition-smooth"
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                asChild
+                className="hidden lg:flex items-center gap-1 h-9 text-sm"
               >
-                {category.name}
-              </Link>
-            ))}
+                <Link to={user ? "/orders" : "/auth"}>
+                  <User className="h-4 w-4" />
+                  <span className="hidden xl:inline">{user ? "Account" : "Sign in / Register"}</span>
+                </Link>
+              </Button>
+
+              <Button variant="ghost" size="icon" className="hidden sm:flex h-9 w-9">
+                <Heart className="h-5 w-5" />
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative h-9 w-9"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                    {itemCount}
+                  </span>
+                )}
+              </Button>
+
+              <Button variant="ghost" size="icon" className="hidden lg:flex h-9 w-9">
+                <Globe className="h-5 w-5" />
+              </Button>
+
+              {user && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9">
+                      <User className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/orders" className="flex items-center gap-2">
+                        <Package className="h-4 w-4" />
+                        Orders & Account
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut} className="flex items-center gap-2">
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden h-9 w-9"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background border-t border-border">
+        <div className="lg:hidden fixed inset-0 top-[120px] bg-background z-40 overflow-y-auto">
           <nav className="container mx-auto px-4 py-4">
-            <div className="flex flex-col gap-4">
-              {categories.map((category) => (
-                <Link
-                  key={category.name}
-                  to={category.href}
-                  className="text-sm font-medium py-2 hover:text-primary transition-smooth"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {category.name}
-                </Link>
-              ))}
+            <div className="space-y-1">
+              <Link to="/" className="block py-3 text-sm font-medium hover:text-primary border-b border-border" onClick={() => setIsMobileMenuOpen(false)}>
+                Best-Selling Items
+              </Link>
+              <Link to="/" className="block py-3 text-sm font-medium hover:text-primary border-b border-border" onClick={() => setIsMobileMenuOpen(false)}>
+                5-Star Rated
+              </Link>
+              <Link to="/" className="block py-3 text-sm font-medium hover:text-primary border-b border-border" onClick={() => setIsMobileMenuOpen(false)}>
+                New In
+              </Link>
+              <div className="py-3 border-b border-border">
+                <div className="font-semibold text-sm mb-2">Categories</div>
+                <div className="space-y-2 pl-4">
+                  <Link to="/phones" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Phones
+                  </Link>
+                  <Link to="/laptops" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Laptops
+                  </Link>
+                  <Link to="/tvs" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    TVs
+                  </Link>
+                  <Link to="/cameras" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Cameras
+                  </Link>
+                  <Link to="/gaming" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Gaming
+                  </Link>
+                  <Link to="/wearables" className="block py-2 text-sm hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Wearables
+                  </Link>
+                </div>
+              </div>
             </div>
           </nav>
         </div>
       )}
 
-      {/* Cart Drawer */}
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-    </header>
+    </>
   );
 };
 
