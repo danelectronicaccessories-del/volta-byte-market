@@ -1,18 +1,19 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 const categories = [
-  "Phones & Accessories",
-  "Laptops & Computers",
-  "TVs & Audio",
-  "Cameras",
-  "Gaming",
-  "Smart Devices",
-  "Wearables",
-  "Fridges & Appliances",
-  "Phone Spares",
-  "Accessories",
+  { name: "Phones & Accessories", path: "/phones" },
+  { name: "Laptops & Computers", path: "/laptops" },
+  { name: "TVs & Audio", path: "/tvs" },
+  { name: "Cameras", path: "/cameras" },
+  { name: "Gaming", path: "/gaming" },
+  { name: "Smart Devices", path: "/smart-devices" },
+  { name: "Wearables", path: "/wearables" },
+  { name: "Fridges & Appliances", path: "/fridges" },
+  { name: "Phone Spares", path: "/phone-spares" },
+  { name: "Accessories", path: "/accessories" },
 ];
 
 const CategoryCarousel = () => {
@@ -47,12 +48,13 @@ const CategoryCarousel = () => {
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {categories.map((category) => (
-              <button
-                key={category}
+              <Link
+                key={category.name}
+                to={category.path}
                 className="flex-shrink-0 px-5 py-2 rounded-full border border-border bg-card hover:border-primary hover:text-primary transition-colors text-sm font-medium whitespace-nowrap"
               >
-                {category}
-              </button>
+                {category.name}
+              </Link>
             ))}
           </div>
 
