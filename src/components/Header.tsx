@@ -49,8 +49,13 @@ const Header = () => {
               <Link to="/auth" className="hover:text-primary transition-colors hidden md:block">
                 Start Selling to Millions of Buyers on VoltaByte
               </Link>
-              <Button variant="ghost" size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 text-primary-foreground px-3">
-                Join Now →
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-7 text-xs bg-primary hover:bg-primary/90 text-primary-foreground px-3"
+                asChild
+              >
+                <Link to="/auth">Join Now →</Link>
               </Button>
             </div>
           </div>

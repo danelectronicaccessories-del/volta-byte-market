@@ -37,9 +37,11 @@ const ProductCard = ({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (user) {
-      await addToCart(id);
+    if (!user) {
+      navigate('/auth');
+      return;
     }
+    await addToCart(id);
   };
 
   // Simulate sales count (in production, this would come from backend)
